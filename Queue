@@ -1,73 +1,118 @@
-public class QueuesArray {
-    private int data[];
-    private int front;
-    private int rear;
-    private int size;
+#include <stdlib.h>
+#include <stdbool.h>
 
-    public QueuesArray(int n) {
-        data = new int[n];
-        front = 0;
-        rear = 0;
-        size = 0;
-    }
+#define MAX 6
 
-    public int length() {
-        return size;
-    }
+int intArray[MAX];
+int front = 0;
+int rear = -1;
+int itemCount = 0;
 
-    public boolean isEmpty() {
-        return size == 0;
-    }
+int peek() {
+   return intArray[front];
+}
 
-    public boolean isFull() {
-        return size == data.length;
-    }
+bool isEmpty() {
+   return itemCount == 0;
+}
 
-    public void enqueue(int e) {
-        if(isFull()) {
-            System.out.println("Queue is Full");
-            return;
-        }
-        else {
-            data[rear] = e;
-            rear = rear + 1;
-            size = size + 1;
-        }
-    }
+bool isFull() {
+   return itemCount == MAX;
+}
 
-    public int dequeue() {
-        if(isEmpty()) {
-            System.out.println("Queue is Empty");
-            return -1;
-        }
-        else {
-            int e = data[front];
-            front = front + 1;
-            size = size - 1;
-            return e;
-        }
-    }
+int size() {
+   return itemCount;
+}  
 
-    public void display() {
-        for(int i=front;i<rear;i++)
-            System.out.print(data[i] + "--");
-        System.out.println();
-    }
+void insert(int data) {
 
-    public static void main(String args[]) {
-        QueuesArray q = new QueuesArray(10);
-        q.enqueue(5);
-        q.enqueue(3);
-        q.display();
-        System.out.println("Size: " + q.length());
-        System.out.println("Element Removed: " + q.dequeue());
-        System.out.println("IsEmpty: "+q.isEmpty());
-        System.out.println("Element Removed: " + q.dequeue());
-        System.out.println("IsEmpty: "+q.isEmpty());
-        q.enqueue(7);
-        q.enqueue(9);
-        q.enqueue(4);
-        q.display();
-        System.out.println("Size: " + q.length());
-    }
+   if(!isFull()) {
+	
+      if(rear == MAX-1) {
+         rear = -1;            
+      }       
+
+      intArray[++rear] = data;
+      itemCount++;
+   }
+}
+
+int removeData() {
+   int data = intArray[front++];
+	
+   if(front == MAX) {
+      front = 0;
+   }
+	
+   itemCount--;
+   return data;  
+}
+
+int main() {
+   /* insert 5 items */
+   insert(3);
+   insert(5);
+   insert(9);
+   insert(1);
+   insert(12);
+
+   // front : 0
+   // rear  : 4
+   // ------------------
+   // index : 0 1 2 3 4 
+   // ------------------
+   // queue : 3 5 9 1 12
+   insert(15);
+
+   // front : 0
+   // rear  : 5
+   // ---------------------
+   // index : 0 1 2 3 4  5 
+   // ---------------------
+   // queue : 3 5 9 1 12 15
+	
+   if(isFull()) {
+      printf("Queue is full!\n");   
+   }
+
+   // remove one item 
+   int num = removeData();
+	
+   printf("Element removed: %d\n",num);
+   // front : 1
+   // rear  : 5
+   // -------------------
+   // index : 1 2 3 4  5
+   // -------------------
+   // queue : 5 9 1 12 15
+
+   // insert more items
+   insert(16);
+
+   // front : 1
+   // rear  : -1
+   // ----------------------
+   // index : 0  1 2 3 4  5
+   // ----------------------
+   // queue : 16 5 9 1 12 15
+
+   // As queue is full, elements will not be inserted. 
+   insert(17);
+   insert(18);
+
+   // ----------------------
+   // index : 0  1 2 3 4  5
+   // ----------------------
+   // queue : 16 5 9 1 12 15
+   printf("Element at front: %d\n",peek());
+
+   printf("----------------------\n");
+   printf("index : 5 4 3 2  1  0\n");
+   printf("----------------------\n");
+   printf("Queue:  ");
+	
+   while(!isEmpty()) {
+      int n = removeData();           
+      printf("%d ",n);
+   }   
 }
